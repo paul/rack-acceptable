@@ -5,14 +5,17 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "rack-acceptable"
-    gem.summary = %Q{TODO: one-line summary of your gem}
-    gem.description = %Q{TODO: longer description of your gem}
+    gem.version = "0.1.0"
+    gem.summary = "Rack::Request extension to handle conneg"
+    gem.description = "Ditto"
     gem.email = "psadauskas@gmail.com"
     gem.homepage = "http://github.com/paul/rack-acceptable"
     gem.authors = ["Paul Sadauskas"]
     gem.add_development_dependency "rspec", ">= 1.2.9"
     gem.add_development_dependency "yard", ">= 0"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
+    
+    gem.add_dependency "rack", ">= 1.1.0"
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError

@@ -1,1 +1,4 @@
 --color
+--format nested
+--loadby random
+--backtrace
