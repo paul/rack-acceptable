@@ -17,7 +17,7 @@ module Rack
     #   req.accept_media_types.prefered #=>  'text/html'
     #
     # For more information, see:
-    # * Acept header:   http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.1
+    # * Accept header:   http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.1
     # * Quality values: http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.9
     #
     # ===== Returns
@@ -35,45 +35,45 @@ module Rack
       # "If no Accept header field is present, then it is assumed that the client
       # accepts all media types."
       #
-      def initialize(header)
-        if header.nil?
-          replace([MediaType.new('*/*')])
+      def initialize(*media_types)
+        media_types = media_types.flatten
+        if media_types.empty?
+          replace(['*/*'])
+        elsif media_types.size == 1
+          replace(media_types.first.split(','))
         else
-          replace(order(header.split(',')))
+          replace(media_types)
         end
+      end
+
+      def replace(media_types = [])
+        super(order(media_types))
       end
 
       # The client's preferred media type, according to the Accept 
       # header quality params. 
-      #
-      # NOTE: By default, this method follows the http spec, and goes
-      # by the client's specified quality parameters. However, because 
-      # some browsers (Webkit) have a broken Accept header, you may 
-      # pass +true+ as the last argument, and the method will instead
-      # choose the first of the types that the client indicates it will
-      # accept. If you want to send HTML to browsers, make sure text/html
-      # comes first in the args here.
       def preference_of(*types)
-        if types.last.is_a?(TrueClass)
-          workaround_busted_browsers = types.pop
-        end
+        types = self.class.new(*types)
+        detect { |acceptable_type| types.include?(acceptable_type) }
+      end
 
-        types = types.size == 1 ? types.first.split(",") : types
-        types.map! { |type| MediaType.new(type) }
-        if workaround_busted_browsers
-          # Return the first acceptable type
-          types.detect { |type| include?(type) }
-        else
-          # Return the most acceptable type
-          detect { |acceptable_type| types.include?(acceptable_type) }
-        end
+      def prioritize(*types)
+        types = self.class.new(*types)
+        select { |acceptable_type| types.include?(acceptable_type) }
+      end
+
+      def first_acceptable(*types)
+        types = self.class.new(*types)
+        types.detect { |type| include?(type) }
       end
 
       private
 
       # Order media types by quality values, and remove invalid types
-      def order(types)
-        types.map {|type| MediaType.new(type) }.sort.select {|type| type.valid? }
+      def order(media_types = [])
+        media_types.map! { |t| t.is_a?(MediaType) ? t : MediaType.new(t) }
+        media_types.sort!
+        media_types.select { |t| t.valid? }
       end
 
       class MediaType
@@ -106,6 +106,7 @@ module Rack
         end
 
         def ==(other_media_type)
+          return false unless other_media_type.is_a?(String) || other_media_type.is_a?(MediaType)
           other_media_type = MediaType.new(other_media_type) unless other_media_type.is_a?(MediaType)
 
           if type == ANY
@@ -131,7 +132,7 @@ module Rack
         # acceptable' for the client."
         #
         def valid?
-          self.quality.between?(0.1, 1)
+          quality > 0 && quality <= 1
         end
 
         def type
