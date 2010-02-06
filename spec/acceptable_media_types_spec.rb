@@ -2,31 +2,6 @@ require File.expand_path("../spec_helper", __FILE__)
 
 describe "Acceptable media types hander" do
 
-  describe 'initialization' do
-    it 'should take a http accept header string' do
-      mt = Rack::Request::AcceptableMediaTypes.new("application/xml,text/html")
-      mt.should have(2).items
-    end
-
-    it 'should take an array of media type strings' do
-      mt = Rack::Request::AcceptableMediaTypes.new("application/xml", "text/html")
-      mt.should have(2).items
-    end
-
-    it 'should take an array of MediaType objects' do
-      xml = Rack::Request::AcceptableMediaTypes::MediaType.new("application/xml")
-      html = Rack::Request::AcceptableMediaTypes::MediaType.new("text/html")
-      mt = Rack::Request::AcceptableMediaTypes.new(xml, html)
-      mt.should have(2).items
-    end
-    
-    it 'should not arbitrarily reorder media types with no quality param' do
-      mt = Rack::Request::AcceptableMediaTypes.new("application/xml,text/html")
-      mt.first.should == "application/xml"
-      mt.last.should  == "text/html"
-    end
-  end
-
   describe "#include?" do
     it 'should know if it includes a media type' do
       mt = Rack::Request::AcceptableMediaTypes.new("text/html")
@@ -88,4 +63,30 @@ describe "Acceptable media types hander" do
       mt.first_acceptable('text/html,application/xml').should == 'text/html'
     end
   end
+
+  describe 'initialization' do
+    it 'should take a http accept header string' do
+      mt = Rack::Request::AcceptableMediaTypes.new("application/xml,text/html")
+      mt.should have(2).items
+    end
+
+    it 'should take an array of media type strings' do
+      mt = Rack::Request::AcceptableMediaTypes.new("application/xml", "text/html")
+      mt.should have(2).items
+    end
+
+    it 'should take an array of MediaType objects' do
+      xml = Rack::Request::AcceptableMediaTypes::MediaType.new("application/xml")
+      html = Rack::Request::AcceptableMediaTypes::MediaType.new("text/html")
+      mt = Rack::Request::AcceptableMediaTypes.new(xml, html)
+      mt.should have(2).items
+    end
+    
+    it 'should not arbitrarily reorder media types with no quality param' do
+      mt = Rack::Request::AcceptableMediaTypes.new("application/xml,text/html")
+      mt.first.should == "application/xml"
+      mt.last.should  == "text/html"
+    end
+  end
+
 end

@@ -1,0 +1,22 @@
+rack-acceptable
+===============
+
+Adds a #acceptable_media_types method to Rack::Request objects so that full-featured content-negotiation can be performed.
+
+Examples
+--------
+
+    env['HTTP_ACCEPT']  #=> 'application/xml;q=0.8,text/html,text/plain;q=0.9'
+    
+    req = Rack::Request.new(env)
+    req.acceptable_media_types          #=> ['text/html', 'text/plain', 'application/xml']
+    
+    req.acceptable_media_types.prioritize('application/xml', 'text/html') #=>  ['text/html', application/xml']
+    req.acceptable_media_types.preference_of('text/plain', 'text/html')   #=>  'text/html'
+    req.acceptable_media_types.first_acceptable('image/png', 'text/html') #=>  'text/html'
+
+
+See spec/acceptable_media_types_spec.rb for more.
+
+
+

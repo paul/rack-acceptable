@@ -13,15 +13,19 @@ module Rack
     #   env['HTTP_ACCEPT']  #=> 'application/xml;q=0.8,text/html,text/plain;q=0.9'
     #
     #   req = Rack::Request.new(env)
-    #   req.accept_media_types          #=> ['text/html', 'text/plain', 'application/xml']
-    #   req.accept_media_types.prefered #=>  'text/html'
+    #   req.acceptable_media_types          #=> ['text/html', 'text/plain', 'application/xml']
+    #
+    #   req.acceptable_media_types.prioritize('application/xml', 'text/html') #=>  ['text/html', application/xml']
+    #   req.acceptable_media_types.preference_of('text/plain', 'text/html')   #=>  'text/html'
+    #   req.acceptable_media_types.first_acceptable('image/png', 'text/html') #=>  'text/html'
     #
     # For more information, see:
     # * Accept header:   http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.1
     # * Quality values: http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.9
     #
     # ===== Returns
-    # AcceptMediaTypes:: ordered list of accept header's media types
+    #
+    # AcceptableMediaTypes:: ordered list of accept header's media types
     #
     def acceptable_media_types
       @acceptable_media_types ||= AcceptableMediaTypes.new(@env['HTTP_ACCEPT'])
