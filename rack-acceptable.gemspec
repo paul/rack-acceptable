@@ -9,21 +9,22 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Paul Sadauskas"]
-  s.date = %q{2010-02-04}
+  s.date = %q{2010-02-06}
   s.description = %q{Ditto}
   s.email = %q{psadauskas@gmail.com}
   s.extra_rdoc_files = [
     "LICENSE",
-     "README.rdoc"
+     "README.mkd"
   ]
   s.files = [
     ".document",
      ".gitignore",
      "LICENSE",
-     "README.rdoc",
+     "README.mkd",
      "Rakefile",
-     "lib/rack-acceptable.rb",
-     "spec/rack-acceptable_spec.rb",
+     "lib/rack/acceptable.rb",
+     "rack-acceptable.gemspec",
+     "spec/acceptable_media_types_spec.rb",
      "spec/spec.opts",
      "spec/spec_helper.rb"
   ]
@@ -34,8 +35,7 @@ Gem::Specification.new do |s|
   s.summary = %q{Rack::Request extension to handle conneg}
   s.test_files = [
     "spec/acceptable_media_types_spec.rb",
-     "spec/spec_helper.rb",
-     "spec/rack-acceptable_spec.rb"
+     "spec/spec_helper.rb"
   ]
 
   if s.respond_to? :specification_version then
