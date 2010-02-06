@@ -50,21 +50,31 @@ module Rack
         super(order(media_types))
       end
 
-      # The client's preferred media type, according to the Accept 
-      # header quality params. 
-      def preference_of(*types)
-        types = self.class.new(*types)
-        detect { |acceptable_type| types.include?(acceptable_type) }
-      end
-
+      # Prioritize a list of media types in order of client preference
       def prioritize(*types)
         types = self.class.new(*types)
         select { |acceptable_type| types.include?(acceptable_type) }
       end
 
+      # Pick the first acceptable of a list of media types. This is 
+      # useful for serving html to broken browsers (>_> Safari) that
+      # provide a wrong Accept header.
+      #
+      # Example:
+      # 
+      #   accept = AcceptableMediaTypes.new("application/xml;q=1.0,text/html;q=0.1")
+      #   accept.first_acceptable('text/html,application/xml')
+      #   #=> 'text/html'
+      #
       def first_acceptable(*types)
         types = self.class.new(*types)
         types.detect { |type| include?(type) }
+      end
+
+      # The prefered type out of list of possible media types
+      def preference_of(*types)
+        types = self.class.new(*types)
+        detect { |acceptable_type| types.include?(acceptable_type) }
       end
 
       private
