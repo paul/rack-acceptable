@@ -1,4 +1,4 @@
-require File.expand_path("../../lib/acceptable_media_types", __FILE__)
+require File.expand_path("../spec_helper", __FILE__)
 
 describe "Acceptable media types hander" do
 
